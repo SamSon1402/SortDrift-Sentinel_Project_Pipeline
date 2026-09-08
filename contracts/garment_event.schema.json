@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GarmentEvent",
+  "type": "object",
+  "required": ["event_id", "garment_id", "customer", "policy_version", "vision", "grade", "route", "total_latency_ms"],
+  "properties": {
+    "event_id": {"type": "string"},
+    "garment_id": {"type": "string"},
+    "customer": {"type": "string"},
+    "policy_version": {"type": "integer"},
+    "grade": {
+      "type": "object",
+      "required": ["grade", "confidence", "reason"],
+      "properties": {
+        "grade": {"enum": ["A", "B", "C", "REVIEW"]},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "reason": {"type": "string"}
+      }
+    },
+    "route": {
+      "type": "object",
+      "required": ["route", "requires_human"],
+      "properties": {
+        "route": {"type": "string"},
+        "requires_human": {"type": "boolean"}
+      }
+    },
+    "total_latency_ms": {"type": "number", "minimum": 0}
+  }
+}

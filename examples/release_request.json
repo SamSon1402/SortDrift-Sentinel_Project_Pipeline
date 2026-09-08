@@ -1,0 +1,19 @@
+{
+  "deployment_id": "texaid-line-02",
+  "current_model": "grader-0.8.4",
+  "candidate_model": "grader-0.9.0",
+  "current_metrics": {
+    "defect_recall": 0.917,
+    "grade_macro_f1": 0.931,
+    "route_agreement": 0.961,
+    "p99_latency_ms": 43.0,
+    "manual_review_rate": 0.071
+  },
+  "candidate_metrics": {
+    "defect_recall": 0.942,
+    "grade_macro_f1": 0.94,
+    "route_agreement": 0.978,
+    "p99_latency_ms": 46.0,
+    "manual_review_rate": 0.058
+  }
+}

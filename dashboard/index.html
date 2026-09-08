@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SortDrift Sentinel</title>
+<style>
+:root{--bg:#111315;--panel:#191d20;--text:#edf1f3;--muted:#94a0a8;--amber:#ffb347;--red:#ff5a5f;--green:#5fd3a1;--line:#2a3035}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:28px}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.top{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px}h1{margin:0;font-size:28px}small{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}.row{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.pill{padding:4px 9px;border-radius:999px;font-weight:700;font-size:12px}.HEALTHY{background:#16392c;color:var(--green)}.WARNING{background:#493317;color:var(--amber)}.CRITICAL{background:#4a2022;color:var(--red)}.WARMING_UP{background:#293037;color:#b9c2c9}.cause{margin:14px 0 4px;font-size:16px}.action{color:var(--muted)}button{background:#242a2f;color:var(--text);border:1px solid #3b444b;padding:9px 12px;border-radius:9px;cursor:pointer}.buttons{display:flex;gap:8px;flex-wrap:wrap}.section{margin-top:22px}pre{white-space:pre-wrap;color:#cbd5db}.metric{color:var(--muted);font-size:12px}
+</style>
+</head>
+<body><main>
+<div class="top"><div><small class="mono">OPERATIONS / CV RELIABILITY</small><h1>SortDrift Sentinel</h1></div><div class="buttons"><button onclick="seed('retextil-line-01','healthy')">Healthy demo</button><button onclick="seed('texaid-line-02','lighting_shift')">Lighting shift</button><button onclick="seed('ecotextile-line-03','critical_drift')">Critical drift</button></div></div>
+<div id="deployments" class="grid"></div>
+<div class="section"><h2>Open / historical incidents</h2><div id="incidents" class="grid"></div></div>
+</main>
+<script>
+async function seed(dep,mode){await fetch(`/v1/demo/${dep}/${mode}?n=64`,{method:'POST'});await load()}
+function val(x){return typeof x==='number'?x.toFixed(3):x}
+async function load(){
+ const overview=await (await fetch('/v1/overview')).json();
+ document.querySelector('#deployments').innerHTML=overview.map(d=>`<article class="card"><div class="row"><b>${d.deployment_id}</b><span class="pill ${d.overall}">${d.overall}</span></div><div class="cause">${d.likely_cause||''}</div><div class="action">${d.recommended_action||''}</div><div style="margin-top:12px">${Object.entries(d.metrics||{}).slice(0,8).map(([k,v])=>`<div class="row metric"><span>${k}</span><span class="mono">${val(v)}</span></div>`).join('')}</div></article>`).join('')||'<small>No deployments yet. Run one of the demos.</small>';
+ const incidents=await (await fetch('/v1/incidents')).json();
+ document.querySelector('#incidents').innerHTML=incidents.slice().reverse().map(i=>`<article class="card"><div class="row"><b>${i.deployment_id}</b><span class="pill ${i.severity}">${i.severity}</span></div><div class="cause">${i.title}</div><pre>${(i.evidence||[]).join('\n')}</pre><div class="action">${i.recommended_action}</div></article>`).join('')||'<small>No incidents.</small>';
+}
+load();setInterval(load,5000)
+</script></body></html>

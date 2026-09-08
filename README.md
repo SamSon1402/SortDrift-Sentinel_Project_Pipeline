@@ -4,6 +4,9 @@ SortDrift Sentinel watches a garment-sorting CV system after it is deployed.
 
 It consumes the same `GarmentEvent` produced by GarmentGrader and answers four practical questions:
 
+<img width="1920" height="1080" alt="sortdrift_sentinel_metrics_clean_1920x1080" src="https://github.com/user-attachments/assets/24b815fa-16de-4162-8112-2a457f05eb2c" />
+
+
 1. Is the camera/input changing?
 2. Is the model drifting or seeing out-of-distribution garments?
 3. Is the edge runtime getting slower or unstable?
